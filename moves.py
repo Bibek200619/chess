@@ -146,8 +146,6 @@ def bishop_highlights(initial_raw, initial_col):
 
 
 def paint_highlights(x, y):
-    print(x, y)
-    print(180 >= x >= -240 and 240 >= y >= -180)
     if 180 >= x >= -240 and 240 >= y >= -180:
         pen.penup()
         pen.goto(x, y)

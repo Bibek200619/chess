@@ -89,7 +89,6 @@ def move_piece(x , y ):
         raw, col = square
         moves.highlight_next_move(board[raw][col], raw, col,turn)
 
-
     if selected is None:
         if board[raw][col] != "__" and board[raw][col] in turn:
             selected = (raw,col)
@@ -98,14 +97,16 @@ def move_piece(x , y ):
     source_raw , source_col = selected
 
     if board[raw][col] in turn and board[source_raw][source_col] in turn:
+        selected = None
+        refresh()
         return
-
 
     board[raw][col] = board[source_raw][source_col]
     board[source_raw][source_col]  = "__"
     selected = None
     refresh()
     count = count + 1
+
 
 
 def refresh():
