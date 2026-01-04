@@ -1,4 +1,5 @@
 import turtle
+import moves
 
 screen = turtle.Screen()
 screen.title("Chess Game")
@@ -42,6 +43,7 @@ def small_square(x,y,colour):
     pen.pendown()
     pen.color(colour)
     pen.pencolor("Black")
+    pen.pensize(5)
     pen.begin_fill()
     for _ in range(4):
         pen.forward(60)
@@ -49,7 +51,7 @@ def small_square(x,y,colour):
     pen.end_fill()
 
 def chess_board():
-    colours = ["black", "white"]
+    colours = ["#81b64c", "#fff"]
 
     for raw in range(8):
         for col in range(8):
@@ -72,7 +74,7 @@ def put_piece(x,y,raw,col):
     pen.goto(x,y)
     pen.pendown()
     if board[raw][col] != "__" :
-        pen.color("#99FFEA") if board[raw][col] in white_piece else pen.color("#8E15AB")
+        pen.color("blue") if board[raw][col] in white_piece else pen.color("black")
         pen.write((board[raw][col]),font=("Arial",12,"bold"))
 
 
@@ -85,7 +87,7 @@ def move_piece(x , y ):
         return
     else:
         raw, col = square
-        highlight_next_move(board[raw][col], raw, col,turn)
+        moves.highlight_next_move(board[raw][col], raw, col,turn)
 
 
     if selected is None:
@@ -126,47 +128,6 @@ def print_board(board):
             print(board[raw][col],end=" ")
         print()
 
-def highlight_next_move(piece,raw,col,turn):
-    if piece in turn:
-        green_it(piece,raw,col)
-
-def green_it(piece,raw,col):
-    if piece in ["bp","wp"]:
-        if (piece == "wp" and raw == 6) or (piece == "bp" and raw == 1) :
-            next_raw = raw + 2 if piece == "bp" else raw - 2
-
-            not_moved = True
-        else:
-            next_raw = raw + 1 if piece == "bp" else raw - 1
-            not_moved = False
-
-        if next_raw < 0 or next_raw >= 8:
-            return
-        
-        x = -240 + (col * 60)
-        y = 240 - (next_raw * 60)
-        pawn_highlights(x, y, not_moved,piece)
-
-    elif piece in ["bw","wr"] :
-        pass
-
-def pawn_highlights(x, y, not_moved,nm):
-    if not_moved:
-        paint_highlights(x, y+60 if nm == "bp" else y-60 )
-        paint_highlights(x, y)
-    else:
-        paint_highlights(x,y)
-
-def paint_highlights(x,y):
-    pen.penup()
-    pen.goto(x, y)
-    pen.pendown()
-    pen.color("green")
-    pen.begin_fill()
-    for _ in range(4):
-        pen.forward(60)
-        pen.right(90)
-    pen.end_fill()
 
 if __name__ == "__main__":
     main()
