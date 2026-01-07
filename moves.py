@@ -12,7 +12,7 @@ def highlight_next_move(piece,raw,col,turn, board):
 
 def highlight(piece, raw, col, board):
     pen.clear()
-    opposit_piece = "b" if piece[0] == "b" else "w"
+    current_piece = "b" if piece[0] == "b" else "w"
 
     if piece in ["bp", "wp"]:
         if (piece == "wp" and raw == 6) or (piece == "bp" and raw == 1):
@@ -34,69 +34,82 @@ def highlight(piece, raw, col, board):
 
 
     elif piece[1] == 'b' :
-        next_moves = bishop_highlights(raw, col, board,opposit_piece)
+        next_moves = bishop_highlights(raw, col, board,current_piece)
 
-        for raw, col in next_moves:
-            x = -240 + (col * 60)
-            y = 240 - (raw * 60)
-            paint_highlights(x, y)
-            paint_highlights(x, y)
+        display_highlights( next_moves)
 
+    elif piece[1] == 'r':
+        next_moves = rook_highlights(raw, col,board, current_piece)
 
-    elif piece in ["wr","br"]:
-        next_moves = rook_highlights(raw, col,board, piece)
+        display_highlights( next_moves)
 
-        for raw, col in next_moves:
-            x = -240 + (col * 60)
-            y = 240 - (raw * 60)
-            paint_highlights(x, y)
-            paint_highlights(x, y)
+    elif piece[1] == 'q':
+        next_moves = queen_highlights(raw, col, board,current_piece)
 
-    elif piece in ["wq","bq"]:
-        next_moves = queen_highlights(raw, col, board,opposit_piece)
-        for raw, col in next_moves:
-            x = -240 + (col * 60)
-            y = 240 - (raw * 60)
-            paint_highlights(x, y)
+        display_highlights(next_moves)
 
-    elif piece in ["wh", "bh"]:
+    elif piece[1] == 'h':
+        next_moves = horse_highlights(raw, col,board,current_piece)
+
+        display_highlights( next_moves)
+
+    elif piece[1] == 'k':
+        next_moves = king_highlights(raw, col, board,current_piece)
+
+        display_highlights( next_moves)
+
+def display_highlights( next_moves):
+    for raw, col in next_moves:
         x = -240 + (col * 60)
         y = 240 - (raw * 60)
-        paint_highlights(x - 60, y + 120) if piece == "wh" else paint_highlights(x + 60 , y - 120)
-        paint_highlights(x + 60, y + 120) if piece == "wh" else paint_highlights(x - 60, y - 120)
-        paint_highlights(x - 60, y - 120) if piece == "wh" else paint_highlights(x + 60 , y + 120)
-        paint_highlights(x + 60, y - 120) if piece == "wh" else paint_highlights(x - 60, y + 120)
-        paint_highlights(x - 120, y + 60) if piece == "wh" else paint_highlights(x + 120, y - 60)
-        paint_highlights(x - 120, y - 60) if piece == "wh" else paint_highlights(x + 120, y + 60)
-        paint_highlights(x + 120, y - 60) if piece == "wh" else paint_highlights(x - 120, y + 60)
-        paint_highlights(x + 120, y + 60) if piece == "wh" else paint_highlights(x - 120, y - 60)
-        paint_highlights(x,y)
+        paint_highlights(x, y)
+        paint_highlights(x, y)
 
-    elif piece in ["wk", "bk"]:
-        x = -240 + (col * 60)
-        y = 240 - (raw * 60)
-        paint_highlights(x + 60, y + 60) if piece == "wk" else paint_highlights(x - 60, y - 60)
-        paint_highlights(x - 60, y - 60) if piece == "wk" else paint_highlights(x + 60, y + 60)
-        paint_highlights(x - 60, y + 60) if piece == "wk" else paint_highlights(x + 60, y - 60)
-        paint_highlights(x + 60, y - 60) if piece == "wk" else paint_highlights(x - 60, y + 60)
-        paint_highlights(x + 60, y ) if piece == "wk" else paint_highlights(x - 60, y )
-        paint_highlights(x - 60, y ) if piece == "wk" else paint_highlights(x + 60, y )
-        paint_highlights(x , y + 60) if piece == "wk" else paint_highlights(x , y - 60)
-        paint_highlights(x , y - 60) if piece == "wk" else paint_highlights(x , y + 60)
-        paint_highlights(x,y)
+def king_highlights(initial_raw, initial_col, board,piece):
+    next_moves = []
+    direction = [(1, 1),
+           (1, -1),
+           (1, 0),
+           (-1, 0),
+           (-1, 1),
+           (-1, -1),
+           (0, -1,),
+           (0, 1,),]
+    for raw,col in direction:
+        raw = initial_raw + raw
+        col = initial_col + col
+        if 0 <= raw < 8 and 0 <= col < 8:
+            current_piece = board[raw][col]
+            if board[raw][col] == "__":
+                next_moves.append((raw, col))
+            elif current_piece[0] != piece[0]:
+                next_moves.append((raw, col))
+    print(next_moves)
+    return next_moves
 
 
-
-def horse_highlights(initial_raw, initial_col):
-    # next_moves = []
-    sign_raw = {"-" : -2, "+" : +2}
-    sign_col = {"-" : -1, "+" : -1}
-    for ch1, ch2 in [["-", "+"], ["+", "-"], ["+", "+"], ["-", "-"]]:
-        raw = initial_raw
-        col = initial_col
-        for _ in range(4):
-            raw += sign_raw[ch1]
-            col += sign_col[ch2]
+def horse_highlights(initial_raw, initial_col, board,piece):
+    next_moves = []
+    direction = [(2, 1),
+           (2, -1),
+           (-2, 1),
+           (-2, -1),
+           (1, 2),
+           (1, -2),
+           (-1, -2),
+           (-1, 2),
+           ]
+    for raw, col in direction:
+        print(piece)
+        raw = initial_raw + raw
+        col = initial_col + col
+        if 0 <= raw < 8 and 0 <= col < 8:
+            current_piece = board[raw][col]
+            if board[raw][col] == "__" :
+                next_moves.append((raw, col))
+            elif current_piece[0] != piece[0]:
+                next_moves.append((raw, col))
+    return next_moves
 
 
 def pawn_highlights(x, y, not_moved, piece):
@@ -109,28 +122,87 @@ def pawn_highlights(x, y, not_moved, piece):
 
 
 def queen_highlights(initial_raw, initial_col, board,piece):
-    next_moves = (bishop_highlights(initial_raw, initial_col, board,piece) +
-                  rook_highlights( initial_raw, initial_col, board, piece) )
-    return next_moves
-
-
-def rook_highlights( initial_raw, initial_col, board,piece) :
     next_moves = []
-    raw = initial_raw
-    col = initial_col
-    for move in range(0, 8):
-        current_piece = board[raw][col]
-        if board[move][col] == "__":
-            next_moves.append([move, initial_col])
-        elif current_piece[0] != piece:
-            next_moves.append([move, initial_col])
-            break
-        else:
-            break
-        next_moves.append([initial_raw, move])
-    next_moves.remove([initial_raw, initial_col])
-    next_moves.remove([initial_raw, initial_col])
+    sign = {"-": -1, "+": +1}
+    for ch1, ch2 in [["-", "+"], ["+", "-"], ["+", "+"], ["-", "-"]]:
+        raw = initial_raw
+        col = initial_col
+        for x in range(0, 8):
+            raw = raw + sign[ch1]
+            col = col + sign[ch2]
+            if 0 <= raw < 8 and 0 <= col < 8:
+                current_piece = board[raw][col]
+                if board[raw][col] == "__":
+                    next_moves.append([raw, col])
+                elif current_piece[0] != piece:
+                    next_moves.append([raw, col])
+                    break
+                else:
+                    break
+            else:
+                break
+    directions = [
+        (-1, 0),  # up
+        (1, 0),  # down
+        (0, -1),  # left
+        (0, 1)  # right
+    ]
+
+    for dr, dc in directions:
+        raw = initial_raw
+        col = initial_col
+
+        for x in range(0, 8):
+            raw += dr
+            col += dc
+
+            if 0 <= raw < 8 and 0 <= col < 8:
+                current_piece = board[raw][col]
+                if board[raw][col] == "__":
+                    print(piece, current_piece[0])
+                    print(current_piece[0] != piece)
+                    next_moves.append([raw, col])
+                elif current_piece[0] != piece:
+                    next_moves.append([raw, col])
+                    break
+                else:
+                    break
+            else:
+                break
     return next_moves
+
+
+def rook_highlights(initial_raw, initial_col, board, piece):
+    next_moves = []
+    directions = [
+        (-1, 0),  # up
+        (1, 0),   # down
+        (0, -1),  # left
+        (0, 1)    # right
+    ]
+
+    for dr, dc in directions:
+        raw = initial_raw
+        col = initial_col
+
+        for x in range(0, 8):
+            raw += dr
+            col += dc
+
+            if 0 <= raw < 8 and 0 <= col < 8:
+                current_piece = board[raw][col]
+                if board[raw][col] == "__":
+                    next_moves.append([raw, col])
+                elif current_piece[0] != piece:
+                    next_moves.append([raw, col])
+                    break
+                else:
+                    break
+            else:
+                break
+
+    return next_moves
+
 
 def bishop_highlights(initial_raw, initial_col, board,piece):
     next_moves = []
