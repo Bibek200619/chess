@@ -83,11 +83,11 @@ def move_piece(x , y ):
     turn = turns[0 if count % 2 == 0 else 1]
 
     square = xy_location(x,y)
-    if square == None:
+    if square is None:
         return
     else:
         raw, col = square
-        moves.highlight_next_move(board[raw][col], raw, col,turn)
+        moves.highlight_next_move(board[raw][col], raw, col,turn, board)
 
     if selected is None:
         if board[raw][col] != "__" and board[raw][col] in turn:
@@ -98,16 +98,16 @@ def move_piece(x , y ):
 
     if board[raw][col] in turn and board[source_raw][source_col] in turn:
         selected = None
+        moves.refresh()
         refresh()
         return
 
-    board[raw][col] = board[source_raw][source_col]
-    board[source_raw][source_col]  = "__"
-    selected = None
-    refresh()
-    count = count + 1
-
-
+    if moves.is_valid(raw,col):
+        board[raw][col] = board[source_raw][source_col]
+        board[source_raw][source_col]  = "__"
+        selected = None
+        refresh()
+        count = count + 1
 
 def refresh():
     pen.clear()
@@ -123,10 +123,10 @@ def xy_location(x,y):
         return raw,col
     return None
 
-def print_board(board):
+def print_board(board1):
     for raw in range(8):
         for col in range(8):
-            print(board[raw][col],end=" ")
+            print(board1[raw][col],end=" ")
         print()
 
 
