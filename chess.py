@@ -129,7 +129,6 @@ def print_board(board1):
             print(board1[raw][col],end=" ")
         print()
 
-
 if __name__ == "__main__":
     main()
 
