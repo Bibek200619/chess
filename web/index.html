@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Deep Chess — AI Engine v2.0</title>
+    <meta name="description" content="Play chess against a deep neural network AI with AlphaZero-style CNN engine. Three difficulty levels powered by quiescence search and residual blocks.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+
+    <!-- Ambient background orbs -->
+    <div class="bg-orb orb-1" aria-hidden="true"></div>
+    <div class="bg-orb orb-2" aria-hidden="true"></div>
+    <div class="bg-orb orb-3" aria-hidden="true"></div>
+
+    <div class="app-wrapper">
+
+      <!-- ── LEFT PANEL ── -->
+      <aside class="sidebar" role="complementary" aria-label="Game controls">
+
+        <!-- Logo / branding -->
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">♞</div>
+          <div class="brand-text">
+            <span class="brand-label">DEEP CHESS</span>
+            <span class="brand-sub">AI Engine v2.0</span>
+          </div>
+        </div>
+
+        <!-- Status card -->
+        <div class="status-card" id="statusCard">
+          <div class="status-turn-row">
+            <div class="turn-orb" id="turnOrb"></div>
+            <span class="turn-name" id="turnName">White</span>
+            <span class="thinking-badge hidden" id="thinkingBadge">
+              <span class="thinking-dot"></span>
+              <span class="thinking-dot"></span>
+              <span class="thinking-dot"></span>
+              Thinking
+            </span>
+          </div>
+          <p class="status-message" id="message">Loading…</p>
+        </div>
+
+        <!-- Mode selector -->
+        <div class="control-group">
+          <span class="control-label">Play Mode</span>
+          <div class="pill-row">
+            <button class="pill-btn" id="friendMode" type="button">
+              <span class="pill-icon">👥</span> Friend
+            </button>
+            <button class="pill-btn" id="aiMode" type="button">
+              <span class="pill-icon">🤖</span> vs AI
+            </button>
+          </div>
+        </div>
+
+        <!-- Difficulty -->
+        <div class="control-group" id="aiControls">
+          <span class="control-label">Difficulty</span>
+          <div class="difficulty-grid">
+            <button class="diff-btn" data-level="1" type="button">
+              <span class="diff-name">Easy</span>
+              <span class="diff-depth">Depth 2</span>
+            </button>
+            <button class="diff-btn" data-level="2" type="button">
+              <span class="diff-name">Medium</span>
+              <span class="diff-depth">Depth 4</span>
+            </button>
+            <button class="diff-btn" data-level="3" type="button">
+              <span class="diff-name">Hard</span>
+              <span class="diff-depth">Depth 6</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="control-group">
+          <span class="control-label">Tools</span>
+          <div class="tool-row">
+            <button class="tool-btn" id="premoveButton" type="button" title="Enable premove (P)">
+              <span class="tool-icon">⚡</span>
+              <span>Premove</span>
+            </button>
+            <button class="tool-btn reset-btn" id="resetButton" type="button" title="New game (R)">
+              <span class="tool-icon">↺</span>
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Engine badge -->
+        <div class="engine-badge">
+          <div class="engine-badge-header">
+            <span class="engine-icon">🧠</span>
+            <span class="engine-title">CNN Engine</span>
+          </div>
+          <div class="engine-features">
+            <div class="feat-chip">Quiescence Search</div>
+            <div class="feat-chip">Transposition Table</div>
+            <div class="feat-chip">AlphaZero CNN</div>
+            <div class="feat-chip">PST Evaluation</div>
+          </div>
+        </div>
+
+        <!-- Keyboard hints -->
+        <div class="key-hints">
+          <span class="key-hint"><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> difficulty</span>
+          <span class="key-hint"><kbd>P</kbd> premove</span>
+          <span class="key-hint"><kbd>R</kbd> reset</span>
+        </div>
+
+      </aside>
+
+      <!-- ── BOARD AREA ── -->
+      <main class="board-area" role="main" aria-label="Chess board">
+
+        <!-- Black captures / material -->
+        <div class="material-row top-material">
+          <div class="material-captures" id="blackCaptures" aria-label="Black captured pieces"></div>
+          <span class="material-label">Black</span>
+        </div>
+
+        <!-- Board wrapper with coordinates -->
+        <div class="board-frame">
+          <div class="rank-labels" aria-hidden="true">
+            <span>8</span><span>7</span><span>6</span><span>5</span>
+            <span>4</span><span>3</span><span>2</span><span>1</span>
+          </div>
+          <div id="board" class="board" role="grid" aria-label="Chess board"></div>
+        </div>
+
+        <div class="file-labels" aria-hidden="true">
+          <span></span><!-- rank gutter -->
+          <div class="file-inner">
+            <span>a</span><span>b</span><span>c</span><span>d</span>
+            <span>e</span><span>f</span><span>g</span><span>h</span>
+          </div>
+        </div>
+
+        <!-- White captures / material -->
+        <div class="material-row bottom-material">
+          <span class="material-label">White</span>
+          <div class="material-captures" id="whiteCaptures" aria-label="White captured pieces"></div>
+        </div>
+
+      </main>
+
+      <!-- ── RIGHT PANEL ── -->
+      <aside class="move-panel" role="complementary" aria-label="Move history">
+        <div class="move-panel-header">
+          <span class="move-panel-title">Move Log</span>
+          <span class="move-count" id="moveCount">0 moves</span>
+        </div>
+        <div class="move-log" id="moveLog">
+          <div class="move-log-empty">Game not started</div>
+        </div>
+      </aside>
+
+    </div><!-- /.app-wrapper -->
+
+    <!-- ── GAME OVER MODAL ── -->
+    <div id="gameOver" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="gameOverText">
+      <div class="modal-backdrop"></div>
+      <div class="modal-card">
+        <div class="modal-icon" id="modalIcon">♛</div>
+        <h2 id="gameOverText">Game over</h2>
+        <p class="modal-sub" id="modalSub"></p>
+        <button id="modalReset" class="modal-btn" type="button">Play Again</button>
+      </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
