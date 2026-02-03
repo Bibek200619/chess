@@ -142,10 +142,10 @@ def queen_highlights(initial_raw, initial_col, board,piece):
             else:
                 break
     directions = [
-        (-1, 0),  # up
-        (1, 0),  # down
-        (0, -1),  # left
-        (0, 1)  # right
+        (-1, 0),
+        (1, 0),
+        (0, -1), 
+        (0, 1)
     ]
 
     for dr, dc in directions:
@@ -159,8 +159,6 @@ def queen_highlights(initial_raw, initial_col, board,piece):
             if 0 <= raw < 8 and 0 <= col < 8:
                 current_piece = board[raw][col]
                 if board[raw][col] == "__":
-                    print(piece, current_piece[0])
-                    print(current_piece[0] != piece)
                     next_moves.append([raw, col])
                 elif current_piece[0] != piece:
                     next_moves.append([raw, col])
@@ -175,10 +173,10 @@ def queen_highlights(initial_raw, initial_col, board,piece):
 def rook_highlights(initial_raw, initial_col, board, piece):
     next_moves = []
     directions = [
-        (-1, 0),  # up
-        (1, 0),   # down
-        (0, -1),  # left
-        (0, 1)    # right
+        (-1, 0),
+        (1, 0),
+        (0, -1),
+        (0, 1)
     ]
 
     for dr, dc in directions:
