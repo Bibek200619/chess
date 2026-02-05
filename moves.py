@@ -10,6 +10,13 @@ def highlight_next_move(piece,raw,col,turn, board):
     if piece in turn:
         highlight(piece, raw, col, board)
 
+def pawn_highlights(x, y, not_moved, piece):
+    if not_moved:
+        paint_highlights(x, y )
+    else:
+        paint_highlights(x, y)
+    paint_highlights(x, y-120) if piece == "wp" else paint_highlights(x, y+120)
+
 def highlight(piece, raw, col, board):
     pen.clear()
     current_piece = "b" if piece[0] == "b" else "w"
@@ -120,15 +127,6 @@ def horse_highlights(initial_raw, initial_col, board,piece):
             elif current_piece[0] != piece[0]:
                 capture.append((raw, col))
     return next_moves, capture
-
-
-def pawn_highlights(x, y, not_moved, piece):
-
-    if not_moved:
-        paint_highlights(x, y )
-    else:
-        paint_highlights(x, y)
-    paint_highlights(x, y-120) if piece == "wp" else paint_highlights(x, y+120)
 
 
 def queen_highlights(initial_raw, initial_col, board,piece):

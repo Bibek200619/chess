@@ -51,7 +51,7 @@ def small_square(x,y,colour):
     pen.end_fill()
 
 def chess_board():
-    colours = ["#81b64c", "#fff"]
+    colours = [ "#fff","#81b64c"]
 
     for raw in range(8):
         for col in range(8):
